@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en" x-data="products">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kopi Kenangan Senja</title>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=arrow_forward" />
+
+    <!-- Linking SwiperJS CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
+
+    <!-- Feather Icons -->
+    <script src="https://unpkg.com/feather-icons"></script>
+
+    <!-- My Style -->
+    <link rel="stylesheet" href="style.css">
+
+    <!-- AlpineJS -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+    <!-- App -->
+    <script src="app.js"></script>
+</head>
+<body>
+    <!-- Navbar Start -->
+    <nav class="navbar">
+        <a href="#" class="navbar-logo">Mist &<span> Maple</span>.</a>
+
+        <div class="navbar-nav">
+            <a href="#home">Home</a>
+            <a href="#about">Tentang Kami</a>
+            <a href="#menu">Menu</a>
+            <a href="#products">Produk</a>
+            <a href="#contact">Kontak</a>
+        </div>
+
+        <div class="navbar-extra">
+            <!-- Search Button -->
+            <a href="#" id="search-button">
+                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3">
+                    <path d="M784-120 532-372q-30 24-69 38t-83 14q-109 0-184.5-75.5T120-580q0-109 75.5-184.5T380-840q109 0 184.5 75.5T640-580q0 44-14 83t-38 69l252 252-56 56ZM380-400q75 0 127.5-52.5T560-580q0-75-52.5-127.5T380-760q-75 0-127.5 52.5T200-580q0 75 52.5 127.5T380-400Z"/>
+                </svg>
+            </a>
+        
+            <!-- Shopping Cart Button -->
+            <a href="#" id="shopping-cart-button">
+                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3">
+                    <path d="M280-80q-33 0-56.5-23.5T200-160q0-33 23.5-56.5T280-240q33 0 56.5 23.5T360-160q0 33-23.5 56.5T280-80Zm400 0q-33 0-56.5-23.5T600-160q0-33 23.5-56.5T680-240q33 0 56.5 23.5T760-160q0 33-23.5 56.5T680-80ZM246-720l96 200h280l110-200H246Zm-38-80h590q23 0 35 20.5t1 41.5L692-482q-11 20-29.5 31T622-440H324l-44 80h480v80H280q-45 0-68-39.5t-2-78.5l54-98-144-304H40v-80h130l38 80Zm134 280h280-280Z"/>
+                </svg>
+                <span class="quantity-badge" x-show="$store.cart.quantity" x-text="$store.cart.quantity">0</span>
+            </a>
+        
+            <!-- Hamburger Menu Button -->
+            <div class="container-1" onclick="myFunction(this)">
+                <div class="bar1"></div>
+                <div class="bar2"></div>
+                <div class="bar3"></div>
+            </div>
+        </div>
+
+        <!-- Search Form Start -->
+        <div class="search-form">
+            <input type="search" id="search-box" placeholder="search here...">
+            <label for="search-box"><i data-feather="search"></i></label>
+        </div>
+        <!-- Search Form End -->
+
+        <!-- Shopping Cart Start -->
+        <div class="shopping-cart">
+            <template x-for="(item, index) in $store.cart.items" x-key="index">
+                <div class="cart-item">
+                    <img :src="`img/Products/${item.img}`" :alt="item.name">
+                    <div class="item-detail">
+                        <h3 x-text="item.name"></h3>
+                        <div class="item-price">
+                            <span x-text="rupiah(item.price)"></span> &times;
+                            <button id="remove" @click="$store.cart.remove(item.id)">&minus;</button>
+                            <span x-text="item.quantity"></span>
+                            <button id="add" @click="$store.cart.add(item)">&plus;</button> &equals;
+                            <span x-text="rupiah(item.total)"></span>
+                        </div>
+                    </div>
+                </div>
+            </template>
+            <h4 x-show="!$store.cart.items.length" style="margin-top: 1rem;">Cart is Empty</h4>
+            <h4 x-show="$store.cart.items.length">Total : <span x-text="rupiah($store.cart.total)"></span></h4>
+
+            <div class="form-container" x-show="$store.cart.items.length">
+                <form action="" id="checkoutform">
+                    <h5>Customer Detail</h5>
+                    <label for="name">
+                        <span>Name</span>
+                        <input type="text" name="name" id="name" required>
+                    </label>
+                    <label for="email">
+                        <span>Email</span>
+                        <input type="email" name="email" id="email" required>
+                    </label>
+                    <label for="phone">
+                        <span>Phone</span>
+                        <input type="number" name="phone" id="phone" required>
+                    </label>
+                    <button class="checkout-button" type="submit" id="checkout-button">Checkout</button>
+                </form>
+            </div>
+        </div>
+        <!-- Shopping Cart End -->
+    </nav>
+    <!-- Navbar End -->
+
+    <!-- Hero Section Start -->
+    <section class="hero" id="home">
+        <main class="content">
+            <h1>Mari Nikmati Secangkir <span>Kopi</span></h1>
+            <p>Kenangan Senja adalah tempat yang cocok untuk menikmati kopi dengan suasana yang nyaman.</p>
+            <a href="#menu" class="cta">Lihat Menu</a>
+        </main>
+    </section>
+    <!-- Hero Section End -->
+
+    <!-- About Section Start -->
+    <section id="about" class="about">
+        <h2><span>Tentang</span> Kami</h2>
+        <div class="row">
+            <div class="about-img">
+                <img src="img/Tentang-Kami.jpg" alt="Tentang Kami">
+            </div>
+            <div class="content">
+                <h3>Kenapa memilih kopi kami?</h3>
+                <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Atque blanditiis quidem nostrum at, iure necessitatibus.</p>
+                <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Voluptas nulla quos illo corporis voluptatum eum provident non repudiandae maxime soluta?</p>
+            </div>
+        </div>
+    </section>
+    <!-- About Section End -->
+
+    <!-- Menu Section Start -->
+    <section id="menu" class="menu">
+        <h2><span>Menu</span> Kami</h2>
+        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Fuga culpa doloribus porro quo, facere quaerat?</p>
+    
+        <!-- Swiper Container -->
+        <div class="swiper-container card-wrapper">
+            <div class="swiper-wrapper">
+                
+                <!-- Card 1 -->
+                <div class="swiper-slide card-item">
+                    <div class="card-image">
+                        <img src="img/Menu/1.jpg" alt="Espresso">
+                    </div>
+                    <div class="card-content">
+                        <h3 class="badge">Espresso</h3>
+                        <p class="card-desc">Nikmat Dan Segar Selalu. Indahnya Coffee.</p>
+                        <div class="card-icons">
+                            <button class="card-button material-symbols-outlined" onclick="openModal('Espresso', 'Nikmat Dan Segar Selalu. Indahnya Coffee.', 'img/Menu/1.jpg')">arrow_forward</button>
+                        </div>
+                    </div>
+                </div>
+    
+                <!-- Card 2 -->
+                <div class="swiper-slide card-item">
+                    <div class="card-image">
+                        <img src="img/Menu/2.jpg" alt="Latte">
+                    </div>
+                    <div class="card-content">
+                        <h3 class="badge">Latte</h3>
+                        <p class="card-desc">Nikmat Dan Segar Selalu. Indahnya Coffee.</p>
+                        <div class="card-icons">
+                            <button class="card-button material-symbols-outlined" onclick="openModal('Latte', 'Nikmat Dan Segar Selalu. Indahnya Coffee.', 'img/Menu/2.jpg')">arrow_forward</button>
+                        </div>
+                    </div>
+                </div>
+    
+                <!-- Card 3 -->
+                <div class="swiper-slide card-item">
+                    <div class="card-image">
+                        <img src="img/Menu/3.jpg" alt="Cappuccino">
+                    </div>
+                    <div class="card-content">
+                        <h3 class="badge">Cappuccino</h3>
+                        <p class="card-desc">Nikmat Dan Segar Selalu. Indahnya Coffee.</p>
+                        <div class="card-icons">
+                            <button class="card-button material-symbols-outlined" onclick="openModal('Cappuccino', 'Nikmat Dan Segar Selalu. Indahnya Coffee.', 'img/Menu/3.jpg')">arrow_forward</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Other Card if needed -->
+            </div>
+    
+            <!-- Add Pagination -->
+            <div class="swiper-pagination"></div>
+    
+            <!-- Add Navigation -->
+            <div class="swiper-button-next"></div>
+            <div class="swiper-button-prev"></div>
+        </div>
+    </section>
+    <!-- Menu Section End -->
+
+    <!-- Products Section Start -->
+    <section class="products" id="products">
+        <h2><span>Produk Unggulan</span> Kami</h2>
+        <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Repudiandae, ab corporis consectetur saepe nobis sapiente.</p>
+    
+        <!-- Swiper Container -->
+        <div class="swiper-container product-wrapper">
+            <div class="swiper-wrapper">
+                <template x-for="(item, index) in items" x-key="index">
+                    <div class="swiper-slide">
+                        <div class="product-card">
+                            <!-- Tombol Icon di Atas Gambar -->
+                            <div class="product-icons">
+                                <a href="#" @click.prevent="$store.cart.add(item)">
+                                    <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <use href="img/feather-sprite.svg#shopping-cart" />
+                                    </svg>
+                                </a>
+                                <a href="#" @click.prevent="openProductModal(item)">
+                                    <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <use href="img/feather-sprite.svg#eye" />
+                                    </svg>
+                                </a>
+                            </div>
+                            <div class="product-image">
+                                <img :src="`img/Products/${item.img}`" :alt="item.name">
+                            </div>
+                            <div class="product-content">
+                                <p class="badge" x-text="item.name"></p>
+                                <h3 class="product-desc" x-text="item.desc"></h3>
+                                <div class="product-price">
+                                    <span x-text="rupiah(item.price)"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </template>
+            </div>
+            <!-- Add Pagination -->
+            <div class="swiper-pagination"></div>
+            <!-- Add Navigation -->
+            <div class="swiper-button-next"></div>
+            <div class="swiper-button-prev"></div>
+        </div>
+    </section>
+    <!-- Products Section End -->
+
+    <!-- Contact Section Start -->
+    <section id="contact" class="contact">
+        <h2><span>Kontak</span> Kami</h2>
+        <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Rerum, ipsum!</p>
+        <div class="row">
+            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d63245.97085555844!2d110.33364505739578!3d-7.803248457452015!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e7a5787bd5b6bc5%3A0x21723fd4d3684f71!2sYogyakarta%2C%20Kota%20Yogyakarta%2C%20Daerah%20Istimewa%20Yogyakarta!5e0!3m2!1sid!2sid!4v1741830294528!5m2!1sid!2sid" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade" class="map"></iframe>
+            <form action="">
+                <div class="input-group">
+                    <i data-feather="user"></i>
+                    <input type="text" placeholder="Nama" required>
+                </div>
+                <div class="input-group">
+                    <i data-feather="mail"></i>
+                    <input type="email" placeholder="Email" required>
+                </div>
+                <div class="input-group">
+                    <i data-feather="phone"></i>
+                    <input type="number" placeholder="Phone" required>
+                </div>
+                <button type="submit" class="btn">Kirim Pesan</button>
+            </form>
+        </div>
+    </section>
+    <!-- Contact Section End -->
+
+    <!-- Footer Section Start -->
+    <footer>
+        <div class="social">
+            <a href="#"><i data-feather="instagram"></i></a>
+            <a href="#"><i data-feather="twitter"></i></a>
+            <a href="#"><i data-feather="facebook"></i></a>
+        </div>
+        <div class="links">
+            <a href="#home">Home</a>
+            <a href="#about">Tentang Kami</a>
+            <a href="#menu">Menu</a>
+            <a href="#contact">Kontak</a>
+        </div>
+        <div class="credit">
+            <p>Create by <a href="">Fathur</a>. | &copy; 2025.</p>
+        </div>
+    </footer>
+    <!-- Footer Section End -->
+
+    <!-- Modal Box Item Detail Menu Start -->
+    <div id="Modal" class="menu-modal" style="display: none;">
+        <div class="modal-container">
+            <div class="modal-content">
+                <img id="modalImage" src="" alt="">
+                <div class="menu-content">
+                    <button onclick="closeModal()" class="close-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3">
+                            <path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z"/>
+                        </svg>
+                    </button>
+                    <h3 id="modalTitle"></h3>
+                    <p id="modalDesc"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Modal Box Item Detail Menu End -->
+
+    <!-- Modal Box Item Detail Product Start -->
+    <div class="modal" x-show="isProductModalOpen" x-transition x-cloak>
+        <div class="modal-container">
+            <button @click="closeProductModal()" class="close-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3">
+                    <path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z"/>
+                </svg>
+            </button>
+            <div class="modal-content">
+                <img :src="selectedProduct ? `img/Products/${selectedProduct.img}` : ''" :alt="selectedProduct ? selectedProduct.name : ''">
+                <div class="product-content">
+                    <h3 x-text="selectedProduct ? selectedProduct.name : ''"></h3>
+                    <p x-text="selectedProduct ? selectedProduct.desc : ''"></p>
+                    <div class="product-stars">
+                        <!-- Isi bintang rating -->
+                    </div>
+                    <div class="product-price" x-text="selectedProduct ? `IDR ${selectedProduct.price.toLocaleString()}` : ''"></div>
+                    <a href="#" @click.prevent="$store.cart.add(selectedProduct)" class="shopping-cart-button">
+                        <i data-feather="shopping-cart"></i><span> Add to Cart</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Modal Box Item Detail Product End -->
+
+    <!-- Feather Icons -->
+    <script>
+        feather.replace();
+    </script>
+    
+    <!-- Linking SwiperJS Script -->
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
+    <!-- My Javascript -->
+    <script src="script.js"></script>
+</body>
+</html>
